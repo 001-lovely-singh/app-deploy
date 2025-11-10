@@ -3,16 +3,24 @@ from pydantic import BaseModel
 import pickle
 import pandas as pd
 import os
+import pathlib
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# Get absolute path to the parent directory (root of your repo)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = pathlib.Path(__file__).parent  # points to /api folder on Vercel
 
-# Full paths to your pickle files
-MODEL_PATH = os.path.join(BASE_DIR, "disease_model.pkl")
-ENCODER_PATH = os.path.join(BASE_DIR, "label_encoder.pkl")
-SYMPTOM_PATH = os.path.join(BASE_DIR, "symptom_list.pkl")
+MODEL_PATH = BASE_DIR / "disease_model.pkl"
+ENCODER_PATH = BASE_DIR / "label_encoder.pkl"
+SYMPTOM_PATH = BASE_DIR / "symptom_list.pkl"
+
 
 # Load saved files safely
 try:
