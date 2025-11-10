@@ -1,9 +1,13 @@
+import os
 from fastapi import FastAPI
 from pydantic import BaseModel
 import pickle
 import pandas as pd
 
 app = FastAPI()
+
+# Get the base directory (one level above current file)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Load saved files
 model = pickle.load(open("disease_model.pkl", "rb"))
