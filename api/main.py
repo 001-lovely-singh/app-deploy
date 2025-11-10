@@ -1,19 +1,40 @@
-import os
 from fastapi import FastAPI
 from pydantic import BaseModel
 import pickle
 import pandas as pd
+import os
 
 app = FastAPI()
 
-# Get the base directory (one level above current file)
+# Get absolute path to the parent directory (root of your repo)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Load saved files
-model = pickle.load(open("disease_model.pkl", "rb"))
-encoder = pickle.load(open("label_encoder.pkl", "rb"))
-symptoms = pickle.load(open("symptom_list.pkl", "rb"))
+# Full paths to your pickle files
+MODEL_PATH = os.path.join(BASE_DIR, "disease_model.pkl")
+ENCODER_PATH = os.path.join(BASE_DIR, "label_encoder.pkl")
+SYMPTOM_PATH = os.path.join(BASE_DIR, "symptom_list.pkl")
 
+# Load saved files safely
+try:
+    with open(MODEL_PATH, "rb") as f:
+        model = pickle.load(f)
+    with open(ENCODER_PATH, "rb") as f:
+        encoder = pickle.load(f)
+    with open(SYMPTOM_PATH, "rb") as f:
+        symptoms = pickle.load(f)
+    print("✅ Model, encoder, and symptom list loaded successfully.")
+except Exception as e:
+    print("❌ Error loading pickle files:", e)
+    model = None
+    encoder = None
+    symptoms = []
+
+# Root route (for testing)
+@app.get("/")
+def home():
+    return {"message": "FastAPI is running successfully on Vercel!"}
+
+# Input model for POST request
 class SymptomInput(BaseModel):
     symptoms: list[str]
 
