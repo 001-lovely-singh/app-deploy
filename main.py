@@ -13,17 +13,7 @@ symptoms = pickle.load(open("symptom_list.pkl", "rb"))
 class SymptomInput(BaseModel):
     symptoms: list[str]
 
-# @app.post("/predict")
-# def predict(data: SymptomInput):
-#     # Create binary dataframe of all symptoms
-#     input_data = {sym: [1 if sym in data.symptoms else 0] for sym in symptoms}
-#     df = pd.DataFrame(input_data)
 
-#     # Predict
-#     pred = model.predict(df)[0]
-#     disease = encoder.inverse_transform([pred])[0]
-
-#     return {"prediction": disease}
 @app.post("/predict")
 def predict(data: SymptomInput):
     # Clean input (same way as training)
